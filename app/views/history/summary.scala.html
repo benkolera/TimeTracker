@@ -6,14 +6,14 @@
   implicit req: RequestHeader 
 )
 
-@main(s"Logs for $target") {
-    
+@main(s"Time logged for '$target'") {
+  <h1>Time logged for '@target'</h1>
   @for( m <- msg ) {
     <div class="alert alert-info">@m</div>
   }
 
   @for( g <- groups ) {
-    <h1>@g.title - @g.sumTime </h1>
+    <h2>@g.title - @g.sumTime </h2>
     <dl class="dl-horizontal">
     @for( line <- g.lines ) {
      <dt>@line.name:</dt>

@@ -103,7 +103,7 @@ object Application extends Controller {
   def userHistory(user: String) = Action { implicit req =>
     DB.withSession{ implicit s =>
       Ok( views.html.history.summary( 
-        user
+        s"User:$user"
         , models.DB.TimeLogs.dateSummaryForUser( user )
         , flash.get("message")
       ) )
@@ -113,7 +113,7 @@ object Application extends Controller {
   def catHistory(cat: String) = Action { implicit req =>
     DB.withSession{ implicit s =>
       Ok( views.html.history.summary( 
-        cat
+        s"Category:$cat"
         , models.DB.TimeLogs.dateSummaryForCategory( cat )
         , None
       ) )
@@ -122,8 +122,8 @@ object Application extends Controller {
 
   def noLogsForToday = Action { implicit req =>
     DB.withSession{ implicit s =>
-      Ok( models.DB.Users.withoutLogForToday.mkString(",") ) 
-   }
+      models.DB.sendReminderNotifications
+      Ok( "SENT" )
+    }
   }
-
 }

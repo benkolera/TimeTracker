@@ -7,7 +7,7 @@ object DB {
 
   import org.joda.time.format.PeriodFormatterBuilder
   import org.scala_tools.time.Imports._
-
+  import com.typesafe.plugin.{use,MailerPlugin}
 
   case class User ( 
     username: String
@@ -117,6 +117,41 @@ object DB {
       Q.query[String,String](
         "SELECT DISTINCT CATEGORY FROM TIME_LOG WHERE CATEGORY LIKE ? ORDER BY 1"
       ).list( s"%$partial%" )
+  }
+
+  def sendReminderNotifications( 
+    implicit app: play.api.Application 
+    , s: Session 
+  ) = {
+
+    val mail = use[MailerPlugin].email
+
+    for ( u <- models.DB.Users.withoutLogForToday ) {
+      mail.setSubject("TimeTracker - Reminder to track time for today");
+      mail.addRecipient(u.email);
+      mail.addFrom(
+        app.configuration.getString("mailer.from_address").getOrElse(
+          "" 
+        ) 
+      )
+
+      val url = Seq(
+        "http://"
+        , app.configuration.getString(
+          "mailer.absolute_host_name"
+        ).getOrElse( 
+          java.net.InetAddress.getLocalHost().getHostName() 
+        )
+        , controllers.routes.Application.index( 
+          Some( u.username )
+        ).toString
+      ).mkString( "" ) 
+
+      mail.send( 
+        s"You haven't recorded time for today. Please record it here: $url"
+        , s"You haven't recorded time for today. Please record it <a href='$url'>here</a>."
+      );
+    }
   }
 
 }
