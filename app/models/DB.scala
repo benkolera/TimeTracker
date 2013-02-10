@@ -9,15 +9,26 @@ object DB {
   import org.scala_tools.time.Imports._
 
 
-  case class User ( username: String, firstName: String, lastName: String )
+  case class User ( 
+    username: String
+    , firstName: String
+    , lastName: String 
+    , email: String 
+  )
 
   object Users extends Table[User]("USERS") {
     def username  = column[String]("USERNAME", O.PrimaryKey)
     def firstName = column[String]("FIRST_NAME")
     def lastName  = column[String]("LAST_NAME")
-    def * = username ~ firstName ~ lastName <> (User,User.unapply _)
+    def email     = column[String]("EMAIL")
+    def * = username ~ firstName ~ lastName ~ email <> (User,User.unapply _)
 
     def all(implicit s: Session) = Query(DB.Users).list
+    def withoutLogForToday(implicit s: Session) = (for {
+      (u,l) <- Users leftJoin TimeLogs on ( 
+        (u,l) => u.username === l.username && l.date === new java.sql.Date(new java.util.Date().getTime)
+      ) if (l.username === null.asInstanceOf[String])
+    } yield u).list
 
   }
 

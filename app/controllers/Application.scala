@@ -7,6 +7,7 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.libs.json.Json
 
+
 object Application extends Controller {
 
   import play.api.db.slick.DB
@@ -43,9 +44,15 @@ object Application extends Controller {
       u => (u.username , s"${u.firstName} ${u.lastName}" ) 
     )
 
-  def index = Action { implicit req =>
+  def index( user: Option[String] ) = Action { implicit req =>
     DB.withSession{ implicit s =>
-      Ok(views.html.index(dayForm,userOptions))
+      Ok(views.html.index(dayForm.fill(
+        DayLog(
+          user.getOrElse("")
+          , new java.sql.Date(new java.util.Date().getTime )
+          , Nil
+        )
+      ),userOptions))
     }
   }
 
@@ -112,4 +119,13 @@ object Application extends Controller {
       ) )
     }
   }
+
+  def noLogsForToday = Action { implicit req =>
+      Ok( "http://" ++
+          java.net.InetAddress.getLocalHost().getHostName() ++
+          controllers.routes.Application.index( 
+            Some( "bkolera" )
+          ).url )
+  }
+
 }
