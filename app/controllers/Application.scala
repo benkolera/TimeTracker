@@ -121,11 +121,9 @@ object Application extends Controller {
   }
 
   def noLogsForToday = Action { implicit req =>
-      Ok( "http://" ++
-          java.net.InetAddress.getLocalHost().getHostName() ++
-          controllers.routes.Application.index( 
-            Some( "bkolera" )
-          ).url )
+    DB.withSession{ implicit s =>
+      Ok( models.DB.Users.withoutLogForToday.mkString(",") ) 
+   }
   }
 
 }
