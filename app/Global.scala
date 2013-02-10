@@ -39,7 +39,7 @@ object Global extends GlobalSettings {
 
         mail.send( 
           s"You haven't recorded time for today. Please record it here: $url"
-          , s"You haven't recorded time for today. Please record it <a href='$url\'>here</a>."
+          , s"You haven't recorded time for today. Please record it <a href='$url'>here</a>."
         );
       }
     }
