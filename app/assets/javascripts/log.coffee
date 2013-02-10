@@ -38,5 +38,7 @@ jQuery ->
       row.remove()
       renumberFields( table )
     
-
+  jQuery(".dt-picker").datepicker
+    format: "yyyy-mm-dd"
+    
   initAutocomplete( jQuery(".category") )

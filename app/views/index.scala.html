@@ -25,17 +25,12 @@
         , '_label -> "Username" 
         , '_showConstraints -> false
       )
-      @helper.input(
-      form("date") 
-      , '_label -> "Date" 
-      , '_showConstraints -> false
-      ){ (id,name,value,args) =>
-        <input type="date" 
-               name="@name" 
-               id="@id"
-               value="@value"
-               @toHtmlArgs(args)>
-      }
+      @helper.inputText(
+        form("date") 
+        , '_label -> "Date" 
+        , '_showConstraints -> false
+        , 'class -> "dt-picker"
+      )
 
       <div class="control-group">
         <label class="control-label">Log Entries:</label>
