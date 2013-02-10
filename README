@@ -1,4 +1,4 @@
-This is your new Play 2.1 application
-=====================================
+Run this by installing play 2.1.0  and running: "play run"
 
-This file will be packaged with your application, when using `play dist`.
+This is really isn't fit for human consumption. Very much a work in progress
+fulfilling a very specific need. :)
