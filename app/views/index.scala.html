@@ -1,0 +1,105 @@
+@(
+  form: Form[Application.DayLog]
+, users: Seq[(String,String)] 
+)(
+  implicit req: RequestHeader
+)
+
+@import helper.ttBootstrap._
+
+@main("Log Day") {
+    
+  @for( err <- form.errors ) {
+    <div class="alert alert-error">
+      @err.toString
+    </div>
+  }
+
+  @helper.form(action = routes.Application.doLog , 'class -> "form-horizontal" ) {
+    <fieldset>
+      <legend>Log Day</legend>
+      
+      @helper.select(
+        form("username") 
+        , users 
+        , '_label -> "Username" 
+        , '_showConstraints -> false
+      )
+      @helper.input(
+      form("date") 
+      , '_label -> "Date" 
+      , '_showConstraints -> false
+      ){ (id,name,value,args) =>
+        <input type="date" 
+               name="@name" 
+               id="@id"
+               value="@value"
+               @toHtmlArgs(args)>
+      }
+
+      <div class="control-group">
+        <label class="control-label">Log Entries:</label>
+        <div class="controls">
+          <table class="table repeat-table">
+            <tr><th>Category</th><th>Hours</th><th>Minutes</th><th></th></tr>
+            @helper.repeat(form("logs"), min = 1) { f =>
+            <tr class="repeat-row">
+              @defining( f("category") ) { input =>
+              <td>
+                <input type="text" 
+                       name="@input.name" 
+                       id="@input.id" 
+                       class="input category span2"
+                       value="@input.value.getOrElse("")" />
+              </td>
+              }
+              @defining( f("hours") ) { input =>
+              <td>
+                <input type="number" 
+                       name="@input.name" 
+                       id="@input.id" 
+                       class="input span1"
+                       value="@input.value.getOrElse("")" 
+                       min="0"
+                       max="24"
+                       />
+              </td>
+              }
+              @defining( f("minutes") ) { input =>
+              <td>
+                <input type="number" 
+                       name="@input.name" 
+                       id="@input.id" 
+                       class="input span1"
+                       value="@input.value.getOrElse("")" 
+                       min="0"
+                       max="59"
+                       />
+              </td>
+              }
+              <td>
+                <a class="btn btn-mini btn-danger repeat-del-btn" href="#">
+                  <i class="icon-remove-sign icon-white"></i>
+                  Remove
+                </a>
+              </td>
+            </tr>
+            }
+            <tr><td span="4"><a class="btn btn-mini btn-success repeat-add-btn" href="#"><i class="icon-plus-sign icon-white"></i> Add new row</a></td></tr>
+          </table>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <input class="btn btn-primary" type="submit" value="submit">
+    </div>
+
+  }
+ 
+@helper.javascriptRouter("jsRoutes")(
+  routes.javascript.Application.categoriesAcJs
+)
+<script src="@routes.Assets.at("javascripts/log.js")"></script>  
+   
+}

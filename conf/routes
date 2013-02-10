@@ -1,0 +1,13 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                      controllers.Application.index
+POST    /                      controllers.Application.doLog
+GET     /categoryAc            controllers.Application.categoriesAcJs(term: String)
+GET     /history               controllers.Application.history
+GET     /history/user/:user    controllers.Application.userHistory(user: String)
+GET     /history/category/:cat controllers.Application.catHistory(cat: String)
+
+GET     /assets/*file         controllers.Assets.at(path="/public", file)

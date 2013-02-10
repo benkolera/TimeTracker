@@ -1,0 +1,23 @@
+@( 
+  users: Seq[(String,String)] 
+, categories: Seq[String]
+)( 
+  implicit req: RequestHeader 
+)
+
+@main(s"Log History") {
+
+  <h1>Users </h1>    
+  <ul>
+  @for( (username,name) <- users ) {
+    <li><a href="@routes.Application.userHistory(username)">@name</a></li>
+  }
+  </ul>
+
+  <h1>Categories </h1>    
+  <ul>
+  @for( c <- categories ) {
+    <li><a href="@routes.Application.catHistory(c)">@c</a></li>
+  }
+  </ul>
+}

@@ -1,0 +1,24 @@
+@( 
+  target: String 
+, groups: Seq[models.DB.TimeLogSummaryGroup] 
+, msg: Option[String]
+)( 
+  implicit req: RequestHeader 
+)
+
+@main(s"Logs for $target") {
+    
+  @for( m <- msg ) {
+    <div class="alert alert-info">@m</div>
+  }
+
+  @for( g <- groups ) {
+    <h1>@g.title - @g.sumTime </h1>
+    <dl class="dl-horizontal">
+    @for( line <- g.lines ) {
+     <dt>@line.name:</dt>
+     <dd>@line.time</dd>
+    }
+    </dl>
+  }
+}

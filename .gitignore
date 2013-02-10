@@ -1,0 +1,6 @@
+target/
+project/project/
+project/target/
+project/plugins/target/
+logs
+*.db
