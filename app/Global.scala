@@ -29,8 +29,9 @@ object Global extends GlobalSettings {
 
         val url = Seq(
           "http://"
-          , java.net.InetAddress.getLocalHost().getHostName() 
-          , ":9000"
+          , application.configuration.getString("mailer.absolute_host_name").getOrElse( 
+            java.net.InetAddress.getLocalHost().getHostName() 
+          )
           , controllers.routes.Application.index( 
             Some( u.username )
           ).toString
