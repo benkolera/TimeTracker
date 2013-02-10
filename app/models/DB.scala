@@ -86,7 +86,7 @@ object DB {
       summarise( _.username, forCategory( category ).groupBy( _.date.toString ) )
 
     def summarise( f: (TimeLog=>String), map: Map[String,Seq[TimeLog]] ) = {
-      (for ( (date, logs) <- map ) yield {
+      (for ( (date, logs) <- map.toSeq.sortBy( _._1 ).reverse ) yield {
         val duration = logs.foldLeft( 0.hours )( 
           (acc,x) => acc + logDuration(x)
         )
