@@ -8,6 +8,6 @@ POST    /                      controllers.Application.doLog
 GET     /categoryAc            controllers.Application.categoriesAcJs(term: String)
 GET     /history               controllers.Application.history
 GET     /history/user/:user    controllers.Application.userHistory(user: String)
-GET     /history/category/:cat controllers.Application.catHistory(cat: String)
+GET     /history/category/*cat controllers.Application.catHistory(cat: String)
 GET     /noLogs                controllers.Application.noLogsForToday
 GET     /assets/*file          controllers.Assets.at(path="/public", file)
