@@ -20,6 +20,14 @@ jQuery ->
         jsRoutes.controllers.Application.categoriesAcJs( req.term ).ajax
           success: res
 
+  removeRow = (dom) ->
+    unless ( jQuery(dom).hasClass( "disabled" ) )
+      row = jQuery(dom).parents(".repeat-row")
+      table = jQuery(row).parents(".repeat-table")
+      row.remove()
+      renumberFields( table )
+
+
   renumberFields( jQuery('.repeat-table') )
 
   jQuery(".repeat-add-btn").click ->
@@ -28,15 +36,11 @@ jQuery ->
     toInsert = jQuery(last).clone()
     jQuery("input",toInsert).each -> this.value = ""
     initAutocomplete( jQuery(".category",toInsert) )
+    jQuery(".repeat-del-btn" , toInsert ).click -> removeRow(this)
     jQuery(last).after( toInsert )
     renumberFields( table )
 
-  jQuery(".repeat-del-btn").click ->
-    unless ( jQuery(this).hasClass( "disabled" ) )
-      row = jQuery(this).parents(".repeat-row")
-      table = jQuery(row).parents(".repeat-table")
-      row.remove()
-      renumberFields( table )
+  jQuery(".repeat-del-btn").click -> removeRow(this)
 
   jQuery(".repeat-table .category:first").focus()
             
