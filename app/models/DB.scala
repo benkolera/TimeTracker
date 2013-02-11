@@ -88,7 +88,7 @@ object DB {
         _.date.asc
       ).list
 
-    def logDuration( l: TimeLog ) = l.hours.hours + l.minutes.minutes
+    def logDuration( l: TimeLog ) = (l.minutes.minutes) + (l.hours.hours)
 
     def dateSummaryForUser( user: String )(implicit s:Session) =
       summarise( _.category , forUser( user ).groupBy( _.date.toString ) )
@@ -103,9 +103,9 @@ object DB {
         )
         TimeLogSummaryGroup(
           date.toString
-          , formatter.print( duration.toPeriod )
+          , formatter.print( duration.toPeriod.normalizedStandard )
           , logs.map( l => TimeLogSummaryLine( 
-            f(l) , formatter.print( logDuration( l ) )
+            f(l) , formatter.print( logDuration( l ).toPeriod.normalizedStandard )
           ) )
         )
       }).toSeq
