@@ -15,15 +15,19 @@ object Application extends Controller {
 
   case class Log(
     category: String
-    , hours: Int
-    , minutes: Int
+    , hours: Option[Int]
+    , minutes: Option[Int]
   )
 
   val logMapping = mapping(
     "category"  -> nonEmptyText( maxLength = 50 )
-    , "hours"   -> number( 0, 24 )
-    , "minutes" -> number( 0, 59 )
-  )(Log.apply)(Log.unapply)
+    , "hours"   -> optional( number( 0, 24 ) )
+    , "minutes" -> optional( number( 0, 59 ) )
+  )(Log.apply)(Log.unapply) verifying(
+    "Cannot have a zero duration log!" , l => 
+      l.hours.map( _ > 0 ).getOrElse( false ) ||
+      l.minutes.map( _ > 0 ).getOrElse( false )
+  )
 
   case class DayLog( 
     username: String 
@@ -74,8 +78,8 @@ object Application extends Controller {
               date = dayLog.date
               , username = dayLog.username
               , category = log.category
-              , hours = log.hours
-              , minutes = log.minutes
+              , hours = log.hours.getOrElse( 0 )
+              , minutes = log.minutes.getOrElse( 0 )
             )
           } )
           Redirect( routes.Application.userHistory( 

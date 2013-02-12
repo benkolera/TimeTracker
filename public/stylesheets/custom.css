@@ -2,8 +2,21 @@ body {
     margin-top: 50px;
 }
 
+.input-error {
+    background-color: #f2dede;
+}
+
 .repeat-table {
 /*    margin-top: 5px; */
+}
+
+#tab-help {
+    display: inline;
+    margin-left: 10px;
+}
+
+#tab-help.hidden {
+    visibility: hidden;
 }
 
 .repeat-table th {

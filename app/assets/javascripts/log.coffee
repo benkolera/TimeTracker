@@ -28,23 +28,46 @@ jQuery ->
       renumberFields( table )
 
 
-  renumberFields( jQuery('.repeat-table') )
+  decorateRepeatRow = (row) ->
+    initAutocomplete( jQuery(".category",row) )
+    jQuery(".repeat-del-btn" , row ).click -> removeRow(this)
 
-  jQuery(".repeat-add-btn").click ->
-    table = jQuery(this).parents(".repeat-table")
+  addRow = (button) ->
+    table = jQuery(button).parents(".repeat-table")
     last = jQuery('.repeat-row:last',table)
+    removeTabHelpTogglers()
     toInsert = jQuery(last).clone()
     jQuery("input",toInsert).each -> this.value = ""
-    initAutocomplete( jQuery(".category",toInsert) )
-    jQuery(".repeat-del-btn" , toInsert ).click -> removeRow(this)
+    decorateRepeatRow( toInsert )
     jQuery(last).after( toInsert )
     renumberFields( table )
+    addTabHelpTogglers()
 
-  jQuery(".repeat-del-btn").click -> removeRow(this)
+  addTabHelpTogglers = () ->
+    jQuery(".repeat-table .minutes:last").on( 
+      "focus.repeatTable"
+      () -> jQuery("#tab-help").removeClass( "hidden" )
+    )
+
+    jQuery(".repeat-table .minutes:last").on( 
+      "blur.repeatTable"
+      () -> jQuery("#tab-help").addClass( "hidden" )
+    )
+
+  removeTabHelpTogglers = () ->     
+    jQuery(".repeat-table .minutes:last").off( ".repeatTable" )
+
+  renumberFields( jQuery('.repeat-table') )
+  addTabHelpTogglers()
+
+  jQuery(".repeat-add-btn").click -> addRow( this )
+  jQuery(".repeat-add-btn").focus -> 
+    addRow( this )
+    jQuery(".repeat-table .category:last").focus()
+
+  jQuery(".repeat-row").each -> decorateRepeatRow( this )
 
   jQuery(".repeat-table .category:first").focus()
             
   jQuery(".dt-picker").datepicker
     format: "yyyy-mm-dd"
-    
-  initAutocomplete( jQuery(".category") )

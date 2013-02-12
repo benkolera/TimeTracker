@@ -11,7 +11,7 @@
     
   @for( err <- form.errors ) {
     <div class="alert alert-error">
-      @err.toString
+      @err.message
     </div>
   }
 
@@ -40,7 +40,7 @@
             @helper.repeat(form("logs"), min = 1) { f =>
             <tr class="repeat-row">
               @defining( f("category") ) { input =>
-              <td>
+              <td class=" @if(!input.errors.isEmpty) { input-error } ">
                 <input type="text" 
                        name="@input.name" 
                        id="@input.id" 
@@ -65,7 +65,7 @@
                 <input type="number" 
                        name="@input.name" 
                        id="@input.id" 
-                       class="input span1"
+                       class="input span1 minutes"
                        value="@input.value.getOrElse("")" 
                        min="0"
                        max="59"
@@ -73,14 +73,22 @@
               </td>
               }
               <td>
-                <a class="btn btn-mini btn-danger repeat-del-btn" href="#">
+                <a class="btn btn-mini btn-danger repeat-del-btn" 
+                   href="#"
+                   tabindex="-1">
                   <i class="icon-remove-sign icon-white"></i>
                   Remove
                 </a>
               </td>
             </tr>
             }
-            <tr><td span="4"><a class="btn btn-mini btn-success repeat-add-btn" href="#"><i class="icon-plus-sign icon-white"></i> Add new row</a></td></tr>
+            <tr><td colspan="4">
+                <a class="btn btn-mini btn-success repeat-add-btn" href="#"><i class="icon-plus-sign icon-white"></i> Add new row</a>
+                <div id="tab-help" class="alert alert-info hidden">
+                  <i class="icon-hand-left"></i>
+                  Press tab to create a new row or press enter to submit
+                </div>
+            </td></tr>
           </table>
         </div>
       </div>
