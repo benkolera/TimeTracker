@@ -115,8 +115,8 @@ object DB {
 
     def searchCategories(partial: String)(implicit s: Session):List[String] = 
       Q.query[String,String](
-        "SELECT DISTINCT CATEGORY FROM TIME_LOG WHERE CATEGORY LIKE ? ORDER BY 1"
-      ).list( s"%$partial%" )
+        "SELECT DISTINCT CATEGORY FROM TIME_LOG WHERE UPPER(CATEGORY) LIKE ? ORDER BY 1"
+      ).list( s"%${partial.toUpperCase()}%" )
   }
 
   def sendReminderNotifications( 
