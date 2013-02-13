@@ -16,6 +16,7 @@ jQuery ->
   initAutocomplete = (dom) ->
     dom.autocomplete
       minLength: 0
+      autoFocus: true
       source: (req,res) ->
         jsRoutes.controllers.Application.categoriesAcJs( req.term ).ajax
           success: res

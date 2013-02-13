@@ -21,7 +21,7 @@
       
       @helper.select(
         form("username") 
-        , users 
+        , Seq( ("" , "Please select a user" ) ) ++ users 
         , '_label -> "Username" 
         , '_showConstraints -> false
       )
@@ -44,7 +44,7 @@
                 <input type="text" 
                        name="@input.name" 
                        id="@input.id" 
-                       class="input category span2"
+                       class="input category span5"
                        value="@input.value.getOrElse("")" />
               </td>
               }
