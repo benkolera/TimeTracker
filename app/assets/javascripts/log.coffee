@@ -61,7 +61,10 @@ jQuery ->
   renumberFields( jQuery('.repeat-table') )
   addTabHelpTogglers()
 
-  jQuery(".repeat-add-btn").click -> addRow( this )
+  jQuery(".repeat-add-btn").click -> 
+    addRow( this )
+    jQuery(".repeat-table .category:last").focus()
+
   jQuery(".repeat-add-btn").focus -> 
     addRow( this )
     jQuery(".repeat-table .category:last").focus()

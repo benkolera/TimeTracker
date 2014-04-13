@@ -123,7 +123,7 @@ object DB {
     implicit app: play.api.Application 
     , s: Session 
   ) = {
-
+    
     val mail = use[MailerPlugin].email
 
     for ( u <- models.DB.Users.withoutLogForToday ) {
@@ -131,7 +131,7 @@ object DB {
       mail.addRecipient(u.email);
       mail.addFrom(
         app.configuration.getString("mailer.from_address").getOrElse(
-          "" 
+          "noreply@devnull.com" 
         ) 
       )
 
