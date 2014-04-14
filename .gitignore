@@ -4,3 +4,4 @@ project/target/
 project/plugins/target/
 logs
 *.db
+/conf/local.conf

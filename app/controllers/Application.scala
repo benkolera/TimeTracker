@@ -24,18 +24,18 @@ object Application extends Controller {
     , "hours"   -> optional( number( 0, 24 ) )
     , "minutes" -> optional( number( 0, 59 ) )
   )(Log.apply)(Log.unapply) verifying(
-    "Cannot have a zero duration log!" , l => 
+    "Cannot have a zero duration log!" , l =>
       l.hours.map( _ > 0 ).getOrElse( false ) ||
       l.minutes.map( _ > 0 ).getOrElse( false )
   )
 
-  case class DayLog( 
-    username: String 
+  case class DayLog(
+    username: String
     , date: java.sql.Date
     , logs: List[Log]
   )
 
-  val dayForm = Form( 
+  val dayForm = Form(
     mapping(
       "username" -> nonEmptyText( maxLength = 25 )
       , "date"   -> sqlDate("yyyy-MM-dd")
@@ -43,9 +43,9 @@ object Application extends Controller {
     )(DayLog.apply)(DayLog.unapply)
   )
 
-  def userOptions(implicit s: scala.slick.session.Session) = 
-    models.DB.Users.all.map( 
-      u => (u.username , s"${u.firstName} ${u.lastName}" ) 
+  def userOptions(implicit s: scala.slick.session.Session) =
+    models.DB.Users.all.map(
+      u => (u.username , s"${u.firstName} ${u.lastName}" )
     )
 
   def index( user: Option[String] ) = Action { implicit req =>
@@ -61,20 +61,20 @@ object Application extends Controller {
   }
 
   def categoriesAcJs( term: String ) = Action {
-    DB.withSession{ implicit s =>
+    DB.withSession{ implicit s:scala.slick.session.Session =>
       Ok( Json.toJson( models.DB.TimeLogs.searchCategories( term ) ) )
     }
   }
 
-  def doLog = Action { implicit req => 
+  def doLog = Action { implicit req =>
     DB.withSession{ implicit s =>
-      dayForm.bindFromRequest.fold( 
-        errForm  => BadRequest( 
-          views.html.index( errForm , userOptions ) 
-        ) 
+      dayForm.bindFromRequest.fold(
+        errForm  => BadRequest(
+          views.html.index( errForm , userOptions )
+        )
         , dayLog => {
           models.DB.TimeLogs.insertMany(dayLog.logs.map { log =>
-            models.DB.TimeLog( 
+            models.DB.TimeLog(
               date = dayLog.date
               , username = dayLog.username
               , category = log.category
@@ -82,8 +82,8 @@ object Application extends Controller {
               , minutes = log.minutes.getOrElse( 0 )
             )
           } )
-          Redirect( routes.Application.userHistory( 
-            dayLog.username 
+          Redirect( routes.Application.userHistory(
+            dayLog.username
           ) ).flashing(
             "message" -> s"Your time for ${dayLog.date} has been recorded!"
           )
@@ -94,19 +94,19 @@ object Application extends Controller {
 
   def history = Action { implicit req =>
     DB.withSession{ implicit s =>
-      Ok( views.html.history.index( 
-        models.DB.Users.all.map( 
+      Ok( views.html.history.index(
+        models.DB.Users.all.map(
           u => (u.username , s"${u.firstName} ${u.lastName}")
         )
         , models.DB.TimeLogs.searchCategories( "" )
       ) )
     }
   }
-  
+
 
   def userHistory(user: String) = Action { implicit req =>
     DB.withSession{ implicit s =>
-      Ok( views.html.history.summary( 
+      Ok( views.html.history.summary(
         s"User:$user"
         , models.DB.TimeLogs.dateSummaryForUser( user )
         , flash.get("message")
@@ -116,7 +116,7 @@ object Application extends Controller {
 
   def catHistory(cat: String) = Action { implicit req =>
     DB.withSession{ implicit s =>
-      Ok( views.html.history.summary( 
+      Ok( views.html.history.summary(
         s"Category:$cat"
         , models.DB.TimeLogs.dateSummaryForCategory( cat )
         , None
